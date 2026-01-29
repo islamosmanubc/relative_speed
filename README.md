@@ -5,7 +5,7 @@ aligned with ego-speed telemetry (SEI CSV). The main entry point is `cli.py`.
 
 ## Requirements
 
-- Python 3.10+ (uses `list[...]` and `X | Y` type hints)
+- Python 3.10+
 - Python dependencies are captured in `requirements.txt`
 
 Install (pip):
