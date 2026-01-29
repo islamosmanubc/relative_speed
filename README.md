@@ -6,14 +6,12 @@ aligned with ego-speed telemetry (SEI CSV). The main entry point is `cli.py`.
 ## Requirements
 
 - Python 3.10+ (uses `list[...]` and `X | Y` type hints)
-- `numpy`
-- `opencv-python` (for reading video size and writing overlay video)
-- Optional: `tqdm` (pretty progress bar; falls back to a simple print progress)
+- Python dependencies are captured in `requirements.txt`
 
 Install (pip):
 
 ```bash
-python -m pip install numpy opencv-python tqdm
+python -m pip install -r requirements.txt
 ```
 
 ## Expected data layout
@@ -70,6 +68,26 @@ Common options:
 --label_whitelist <csv>       Keep only these labels (ids or names)
 --max_depth_m <float>         Ignore objects deeper than this
 ```
+
+## SEI extraction (get_sei.py)
+
+`get_sei.py` provides a helper function that downloads a Tesla dashcam video from S3,
+checks for SEI metadata, and writes CSV outputs.
+
+Example (run from repo root):
+
+```bash
+python -c "from get_sei import get_sei_data; ok, sei_csv, video_path = get_sei_data('s3://bucket/path/video.mp4', output_dir='sei_data', dmp_id=123, org_id='org', key_id='key', vin='VIN'); print(ok, sei_csv, video_path)"
+```
+
+Behavior:
+- Creates the `output_dir` (it must not already exist).
+- Downloads the video into `output_dir/video/`.
+- Writes `sei_data_YYYYMMDD_HHMMSS.csv` and `disengagement_data_YYYYMMDD_HHMMSS.csv`.
+- Writes a log file `check_single_video_YYYYMMDD_HHMMSS.log` in `output_dir/`.
+
+Note: `sei_data/src/s3_downloader.py` requires AWS credentials (`aws_key`, `aws_secret`).
+`get_sei.py` currently does not pass them, so update it (or read from environment) before use.
 
 ## Outputs
 
